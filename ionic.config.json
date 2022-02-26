@@ -1,0 +1,12 @@
+{
+    "name": "OrderMeal",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "vue",
+    "hooks": {
+        "build:after": "./build-after.js",
+        "build:before": "./hook/build-before.js",
+        "serve:before": "./hook/build-before.js"
+    }
+}
