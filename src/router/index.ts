@@ -21,7 +21,7 @@ const constantRoutes: Array<RouteRecordRaw> = [
 ];
 
 // 合并其他模块的路由
-const allConstantRoutes= [...constantRoutes,...tabModules]
+const allConstantRoutes= [...constantRoutes, ...tabModules, ...homeModules]
 // const allConstantRoutes= constantRoutes
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),

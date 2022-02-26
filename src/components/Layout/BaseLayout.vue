@@ -1,11 +1,11 @@
 <template>
     <ion-page>
-        <ion-header class="header ion-no-border" collapse="fade" mode="ios" >
+        <ion-header class="header ion-no-border" mode="ios">
             <ion-toolbar class="toolbar" mode="ios">
                 <ion-buttons slot="start">
                     <ion-back-button v-if="isShowBackBtn" :default-href="props.pageDefaultBackLink" mode="ios"></ion-back-button>
                 </ion-buttons>
-                <ion-title>{{props.pageTitle}}</ion-title>
+                <ion-title v-if="isShowTitle">{{props.pageTitle}}</ion-title>
                 <slot name="title"/>
                 <ion-buttons slot="end">
                     <slot name="actionsBtn"></slot>
@@ -14,7 +14,7 @@
             <slot name="header"/>
         </ion-header>
 
-        <ion-content :fullscreen="isFullscreen">
+        <ion-content >
             <slot name="content"/>
         </ion-content>
         <slot/>
@@ -33,6 +33,8 @@ interface BaseLayoutProps {
   pageTitle?: string
   // 是否显示返回的按钮
   isShowBackBtn?: boolean,
+  // 是否显示标题
+  isShowTitle?: boolean,
   //是否有全屏属性
   isFullscreen?: boolean
 }
@@ -40,43 +42,42 @@ const props = withDefaults(defineProps<BaseLayoutProps>(), {
   pageDefaultBackLink: '/',
   pageTitle: '',
   isShowBackBtn: true,
-  isFullscreen: true
+  isShowTitle: true,
+  isFullscreen: false
 })
 
 </script>
 
 <style lang="scss" scoped>
-ion-back-button::part(native) {
-    font-size: 1.6rem;
-    color: #364170;
-}
-.toolbar {
-    --background: #fff;
-    --min-height: 44px;
-    --padding-start: 1.5rem;
-    --padding-end: 1.5rem;
-    height: 4.4rem;
-    max-height: 60px;
-    display: flex;
-    ion-icon {
-        font-size: 2.4rem;
+.header {
+    .toolbar {
+        --background: darksalmon;
+        --min-height: 4.4rem;
+        --padding-start: 1.5rem;
+        --padding-end: 1.5rem;
+        height: 4.4rem;
+        // max-height: 60px;
+        display: flex;
+        ion-icon {
+            font-size: 2.4rem;
+        }
+        ion-buttons {
+            height: 100%!important;
+        }
+    }
+    ion-back-button::part(native) {
+        font-size: 1.6rem;
+        color: #364170;
     }
 }
-.title-default {
-    font-weight: bold;
-    font-size: 1.8rem;
-    color: #364170;
-}
-.ion-page {
-    background: #fff;
+
+// .header-ios ion-toolbar:last-of-type {
+//     --border-width: 0;
+// }
+ion-content::part(background) {
+    background-color: #f3f3f3;
 }
 
-.header-ios ion-toolbar:last-of-type {
-    --border-width: 0;
-}
-ion-content::part(background) {
-    background: none!important;
-}
 /*>=765px的设备*/
 @media (min-width: 765px) {
     .title-default {

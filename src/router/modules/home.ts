@@ -3,9 +3,9 @@ import { RouteRecordRaw } from 'vue-router';
 const homeModules: Array<RouteRecordRaw> = [
     // 待办列表页
     {
-        name:'TodoList',
-        path: "/todoList",
-        component: () => import("@/views/Home/TodoList.vue"),
+        name:'ShopList',
+        path: "/shopList",
+        component: () => import("@/views/Home/ShopList.vue"),
     }
 ]
 
