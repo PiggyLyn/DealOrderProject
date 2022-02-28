@@ -15,8 +15,8 @@
                 </div>
                 <div class="bottomLine">
                     <div class="detailLine">
-                        <span class="minCost">￥{{item.minCost}}起送</span>
-                        <span class="postage">配送费￥{{item.postage}}</span>
+                        <span class="minCost">￥{{item.minCost}}起送 </span>|
+                        <span class="postage"> 配送费￥{{item.postage}}</span>
                     </div>
                     <div class="detailLine">
                         <span class="time">{{item.time}}分钟</span>
@@ -51,6 +51,7 @@ const router = useRouter()
         --border-style: none;
         img {
             margin-bottom: 0;
+            height: 7rem;
         }
         .content {
             width: 100%;
@@ -63,6 +64,7 @@ const router = useRouter()
             }
             .detailLine {
                 font-size: 1.2rem;
+                color: #666;
                 .star {
                     .num {
                         color: #ff6000;

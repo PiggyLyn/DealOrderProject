@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<BaseLayoutProps>(), {
 <style lang="scss" scoped>
 .header {
     .toolbar {
-        --background: darksalmon;
+        --background: #3190e8;
         --min-height: 4.4rem;
         --padding-start: 1.5rem;
         --padding-end: 1.5rem;

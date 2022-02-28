@@ -52,7 +52,7 @@ const dismiss = () => {
 <style scoped lang="scss">
 .header {
     .toolbar {
-        --background: darksalmon;
+        --background: #3190e8;
         --min-height: 4.4rem;
         --padding-start: 1rem;
         --padding-end: 1rem;
