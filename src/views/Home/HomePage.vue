@@ -90,7 +90,7 @@ const typeList = reactive({
     }]
 })
 // 商家列表
-const shopList = reactive({
+const shopList:any = reactive({
     list: [{
         shopID: '1',
         shopName: '肯德基',
@@ -99,6 +99,7 @@ const shopList = reactive({
         time: 30, // 配送时间
         star: 4.5, // 评分
         monthSell: 520, // 月销量
+        announce: '我是公告我是公告', // 公告
     }, {
         shopID: '2',
         shopName: '肯德基',
@@ -107,6 +108,7 @@ const shopList = reactive({
         time: 30, // 配送时间
         star: 4.5, // 评分
         monthSell: 520, // 月销量
+        announce: '我是公告我是公告', // 公告
     }, {
         shopID: '3',
         shopName: '肯德基',
@@ -115,6 +117,7 @@ const shopList = reactive({
         time: 30, // 配送时间
         star: 4.5, // 评分
         monthSell: 520, // 月销量
+        announce: '我是公告我是公告', // 公告
     }, {
         shopID: '4',
         shopName: '肯德基',
@@ -123,6 +126,7 @@ const shopList = reactive({
         time: 30, // 配送时间
         star: 4.5, // 评分
         monthSell: 520, // 月销量
+        announce: '我是公告我是公告', // 公告
     }]
 })
 

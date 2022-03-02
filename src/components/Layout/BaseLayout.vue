@@ -70,10 +70,6 @@ const props = withDefaults(defineProps<BaseLayoutProps>(), {
         color: #364170;
     }
 }
-
-// .header-ios ion-toolbar:last-of-type {
-//     --border-width: 0;
-// }
 ion-content::part(background) {
     background-color: #f3f3f3;
 }

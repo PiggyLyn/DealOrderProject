@@ -30,11 +30,11 @@ import "@/assets/iconfont/iconfont.css"
 
 <style lang="scss" scoped>
 ion-tab-bar {
-    background: #fff;
-    height: 5rem;
+    // background: #fff;
+    // height: 4rem;
 }
 ion-tab-button {
-    background: #fff;
+    // background: #fff;
     img {
         width: 1.8rem;
         height: 1.8rem;
@@ -44,7 +44,8 @@ ion-tab-button {
     }
     ion-label {
         font-size: 1rem;
-        margin-top: 0.5rem;
+        margin-top: 0;
+        margin-bottom: 0;
     }
 }
 </style>

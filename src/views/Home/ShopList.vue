@@ -1,6 +1,13 @@
 <template>
     <base-layout :pageTitle="pageTitle">
         <template #content>
+            <ion-refresher
+            slot="fixed"
+            @ionRefresh="doRefresh($event)"
+            class="listRefresher"
+            >
+                <ion-refresher-content :pulling-icon="chevronDownOutline"/>
+            </ion-refresher>
             <shop-list-cpn :list="shopList.list"/>
             <ion-infinite-scroll
                 @ionInfinite="loadData($event)"
@@ -20,8 +27,11 @@
 import BaseLayout from "@/components/Layout/BaseLayout.vue";
 import { onMounted, reactive, ref } from "vue";
 import ShopListCpn from './components/ShopListCpn.vue';
-import { IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/vue';
+import { IonInfiniteScroll, IonInfiniteScrollContent, IonRefresher, IonRefresherContent } from '@ionic/vue';
 import { useRoute } from 'vue-router';
+import { chevronDownOutline } from 'ionicons/icons'
+import ListFooter from "@/components/ListFooter/ListFooter.vue";
+import FilterCpn from "@/components/Filter/FilterCpn.vue";
 
 const route = useRoute()
 
@@ -140,6 +150,18 @@ const shopList2 = reactive({
 onMounted(() => {
     pageTitle.value = route.params.label
 })
+
+/**
+ * 下拉刷新
+ */
+const doRefresh = (event: CustomEvent) => {
+    pageIndex = 1;
+    setTimeout(() => {
+        queryShopList(pageIndex, {});
+        (event.target as any).complete();
+    }, 500);
+}
+
 /**
  * 上拉加载更多
  */
@@ -181,5 +203,8 @@ const queryShopList = async(index:number, params:any) => {
 </style>
 
 <style lang="scss">
+ion-refresher.refresher-active {
+    // background: red!important;
+}
 
 </style>

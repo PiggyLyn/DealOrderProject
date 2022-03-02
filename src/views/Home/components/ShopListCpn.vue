@@ -4,7 +4,8 @@
         class="listItem"
         :detail="false"
         v-for="item in list"
-        :key="item.id"
+        :key="item.shopID"
+        @click="goShopItem(item.shopID)"
         button>
             <img slot="start" src="@/assets/images/IndexPage/purple.png"/>
             <div class="content">
@@ -39,6 +40,13 @@ const props = defineProps<{
 
 const router = useRouter()
 
+/**
+ * @description 跳转到商家详情页
+ * @param id 商家id
+ */
+const goShopItem = (id:any) => {
+    router.push({name: 'ShopItem', params: {id}})
+}
 </script>
 <style lang="scss" scoped>
 .shopListCpn {
