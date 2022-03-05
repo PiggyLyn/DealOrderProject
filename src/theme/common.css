@@ -43,6 +43,12 @@
     color: #000;
 }
 
+.cartModal {
+    --background: #fff;
+    color: red;
+    height: auto;
+}
+
 
 /*========== ionic 自定义标签点击效果 水波纹========== */
 

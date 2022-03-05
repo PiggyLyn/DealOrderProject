@@ -1,6 +1,13 @@
 <template>
     <base-layout>
         <template #content>
+            <cart-cpn
+            :isShowCart="isShowCart"
+            :showBackdrop="showBackdrop"
+            :cartData="cartData.list"
+            @closeCart="closeCart"
+            />
+            
             <div class="shopHead">
                 <img src="@/assets/images/IndexPage/purple.png"/>
                 <span class="shopName">{{shopItem.item.shopName}}</span>
@@ -8,7 +15,7 @@
                 <span class="announce">公告：{{shopItem.item.announce}}</span>
             </div>
             <div class="shopSegment">
-                 <ion-segment @ionChange="segmentChanged($event)" mode="md" value="order" ref="segment">
+                 <ion-segment @ionChange="segmentChanged($event)" mode="md" :value="segmentValue" ref="segment">
                     <ion-segment-button value="order" id="order">
                         <ion-label>点餐</ion-label>
                     </ion-segment-button>
@@ -32,15 +39,15 @@
                 </ion-slide>
             </ion-slides>
         </template>
-        <ion-footer class="footerContent">
+        <ion-footer class="footerContent" v-if="showFooter">
             <div class="left">
-                <ion-icon :icon="cart" class="cartIcon"></ion-icon>
+                <ion-icon :icon="cart" class="cartIcon" @click="openCart" :class="{'selectedIcon': totalCost > 0}"></ion-icon>
                 <div class="inner">
-                    <span class="total">￥123</span>
+                    <span class="total">￥{{totalCost}}</span>
                     <span class="postage">配送费￥{{shopItem.item.postage}}</span>
                 </div>
             </div>
-            <ion-button class="right" expand="full" :disabled="btnIsDisabled">还差35元</ion-button>
+            <ion-button class="right" expand="full" :disabled="btnIsDisabled">{{btnText}}</ion-button>
         </ion-footer>
     </base-layout>
 </template>
@@ -53,10 +60,14 @@ import { getShopItem } from '@/api/home'
 import { ResultEnum } from '@/utils/http/types';
 import { toast } from '@/utils/message/toast';
 import { cart } from 'ionicons/icons'
-import { IonSegment, IonSegmentButton, IonSlides, IonSlide } from '@ionic/vue';
+import { IonSegment, IonSegmentButton, IonSlides, IonSlide, IonItem, onIonViewWillLeave } from '@ionic/vue';
 import ShopOrder from "./ShopSlides/ShopOrder.vue"
 import ShopComment from "./ShopSlides/ShopComment.vue"
 import ShopDetail from "./ShopSlides/ShopDetail.vue"
+import eventBus from "@/utils/common/EventBus";
+import { originModal } from "@/utils/message/alertModal";
+import CartCpn from "./components/CartCpn.vue"
+
 
 const route = useRoute()
 // 商家id
@@ -75,9 +86,66 @@ const slideOpts = {
 };
 const slides = ref(null)
 const segment = ref(null)
+// segment的初始值
+const segmentValue = ref('order')
+// 购物车总价
+const totalCost = ref(0)
+// 是否显示购物车和遮罩
+let isShowCart = ref(false)
+let showBackdrop = ref(false)
+// 购物车的数据
+let cartData = reactive({
+    list: []
+})
+// 购物车的数据ID
+let cartDataID = []
+// 是否显示footer，解决切换页面时残影bug
+const showFooter = ref(true)
+
+/**
+ * @description 监听加减商品事件，完成购物车计算
+ */
+eventBus.on("cartCount", (params: any) => {
+    if (params.operation === 'minus') {
+        totalCost.value -= params.item.currentCost
+        // 在购物车里操作数量，如果为0，则删除这条商品数据
+        if (params.item.cartCount === 0) {
+            let cartIndex;
+            cartData.list.find((ele:any, index:number) => {
+                if (ele.foodID === params.item.foodID) {
+                    cartIndex = index
+                }
+            })
+            cartData.list.splice(cartIndex, 1)
+            cartDataID.splice(cartIndex, 1)
+        }
+        // 购物车总价为0，自动关闭购物车
+        if (totalCost.value === 0) {
+            isShowCart.value = false
+        }
+    } else if (params.operation === 'plus') {
+        totalCost.value += params.item.currentCost
+        // 如果购物车不包含该商品，则添加
+        if (!cartDataID.includes(params.item.foodID)) {
+            cartData.list.push(params.item)
+            cartDataID.push(params.item.foodID)
+        }
+    }
+    btnIsDisabled.value = totalCost.value < shopItem.item.minCost
+    if (btnIsDisabled.value) {
+        const num = shopItem.item.minCost - totalCost.value
+        btnText.value = "差￥" + num + "起送"
+    } else {
+        btnText.value = "去结算"
+    }
+});
 
 onMounted(() => {
     queryShopItem()
+})
+
+onIonViewWillLeave(() => {
+    showFooter.value = false
 })
 
 /**
@@ -94,7 +162,7 @@ const queryShopItem = async() => {
         shopID,
         shopName: '肯德基',
         postage: 5, // 配送费
-        minCost: 20, // 起送价
+        minCost: 50, // 起送价
         time: 30, // 配送时间
         star: 4.5, // 评分
         monthSell: 520, // 月销量
@@ -105,74 +173,99 @@ const queryShopItem = async() => {
             menuLabel: '新品上市',
             foodList: [{
                 foodID: 'plan1',
-                foodLabel: '套餐一',
-                monthSell: 18,
-                prevCost: 79,
-                currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                foodLabel: '套餐1',
+                monthSell: 18, // 月售
+                prevCost: 79, // 原价
+                currentCost: 49, // 现价
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, {
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan2',
+                foodLabel: '套餐2',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, {
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan3',
+                foodLabel: '套餐3',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, {
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan4',
+                foodLabel: '套餐4',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, ]
         }, {
             menuID: 'cheap', 
             menuLabel: '特惠商品',
             foodList: [{
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan11',
+                foodLabel: '套餐11',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, {
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan22',
+                foodLabel: '套餐22',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, {
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan33',
+                foodLabel: '套餐33',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, {
-                foodID: 'plan1',
-                foodLabel: '套餐一',
+                foodID: 'plan44',
+                foodLabel: '套餐44',
                 monthSell: 18,
                 prevCost: 79,
                 currentCost: 49,
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉'
+                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                cartCount: 0, // 加购数量
             }, ]
         }, ]
     }
+    // 把第一个菜单添加isSelected属性为true，默认选中样式
+    shopItem.item.menuList[0].isSelected = true
+    btnText.value = "差￥" + shopItem.item.minCost + "起送"
+}
+
+/**
+ * @description 打开购物车
+ */
+const openCart = () => {
+    isShowCart.value = totalCost.value > 0 ? !isShowCart.value : false
+}
+
+/**
+ * @description 监听关闭购物车
+ */
+const closeCart = () => {
+    isShowCart.value = false
 }
 
 /**
  * @description segment变化时触发，修改当前展示slide
  */
 const segmentChanged = (e: CustomEvent) => {
-    // slides.value.$el.getActiveIndex().then(res => console.log(res))
+    slides.value.$el.getActiveIndex().then(res => console.log(res))
     let slideIndex = 0
     if (e.detail.value === "order") {
         slideIndex = 0
@@ -188,14 +281,13 @@ const segmentChanged = (e: CustomEvent) => {
  * @description slide发生变化后触发，修改当前高亮segment
  */
 const ionSlideDidChange = () => {
-    (window.document.querySelector(".segment-button-checked") as HTMLElement).classList.remove("segment-button-checked")
     slides.value.$el.getActiveIndex().then(res => {
         if (res === 0) {
-            (window.document.querySelector("#order") as HTMLElement).classList.add("segment-button-checked")
+            segmentValue.value = 'order'
         } else if (res === 1) {
-            (window.document.querySelector("#comment") as HTMLElement).classList.add("segment-button-checked")
+            segmentValue.value = 'comment'
         } else if (res === 2) {
-            (window.document.querySelector("#detail") as HTMLElement).classList.add("segment-button-checked")
+            segmentValue.value = 'detail'
         }
     })
 }
@@ -234,6 +326,7 @@ ion-slides {
     max-height: 4.8rem;
 }
 .footerContent {
+    background: #fff;
     height: 4.4rem;
     display: flex;
     justify-content: space-between;
@@ -251,17 +344,22 @@ ion-slides {
                 font-size: 1.6rem;
             }
             .postage {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
             }
         }
         .cartIcon {
             font-size: 4rem;
-            color: #3190e8;;
+            color: #3190e8;
+            opacity: .5;
+        }
+        .cartIcon.selectedIcon {
+            opacity: 1;
         }
     }
     .right {
         margin: 0;
         height: 100%;
+        width: 11rem;
     }
 }
 </style>

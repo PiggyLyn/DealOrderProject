@@ -276,11 +276,11 @@ export const customAlert = async (component: any, props?: Props) => {
   pages.present();
 };
 
-export const originModal = async (component: any, props?: Props, opts: Props = {}) => {
+export const originModal = async (component: any, cssClass: string,  props?: Props, opts: Props = {}) => {
   const pages = await modalController.create({
     component,
+    cssClass,
     componentProps: props,
-    cssClass: cssClass,
     ...opts
   });
   pages.present();
