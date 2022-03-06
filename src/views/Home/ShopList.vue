@@ -175,7 +175,9 @@ const loadData = (ev: CustomEvent) => {
 }
 
 /**
- * 获取商家列表
+ * @description 获取商家列表
+ * @param index 页码
+ * @param params 传给后端的参数
  */
 const queryShopList = async(index:number, params:any) => {
     // const { ReturnData, RetCode } = await getShopList(params,{ pageIndex:index, pageSize: 10 })

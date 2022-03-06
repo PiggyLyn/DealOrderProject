@@ -22,6 +22,7 @@
             >
                 <div class="rightMenu">{{item.menuLabel}}</div>
                 <ion-item
+                @click="gotoDetail(ele)"
                 class="rightItem"
                 v-for="ele in item.foodList"
                 :key="ele.foodID"
@@ -50,15 +51,19 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import eventBus from "@/utils/common/EventBus";
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
-    menuList: any
+    menuList: any,
+    shopID: any
 }>()
 
 // 监听props的变化
 watch(() => props.menuList, () => {
     currentMenu.item = props.menuList[0]
 });
+
+const router = useRouter()
 
 // 当前选中菜单，默认是菜单列表第一个
 const currentMenu:any = reactive({
@@ -92,6 +97,14 @@ const chooseMenu = (item:any) => {
     currentMenu.item = item
     const ele = document.querySelector('#'+item.menuID)
     ele.scrollIntoView({behavior: "smooth"});
+}
+
+/**
+ * @description 跳转商品详情
+ * @param foodID 当前商品id
+ */
+const gotoDetail = (foodItem:any) => { 
+    router.push({name: 'FoodItem', params: { foodItem: JSON.stringify(foodItem), shopID: props.shopID}})
 }
 </script>
 

@@ -24,7 +24,7 @@
 import { onMounted, reactive, ref } from 'vue';
 import BaseLayout from '@/components/Layout/BaseLayout.vue';
 import SearchItem from '@/components/SearchBar/SearchItem.vue';
-import { getGoodsType, getShopList } from "@/api/home"
+import { getShopList } from "@/api/home"
 import GoodsTypeCpn from './components/GoodsTypeCpn.vue';
 import ShopListCpn from './components/ShopListCpn.vue';
 import { ResultEnum } from '@/utils/http/types';
@@ -174,14 +174,6 @@ onMounted(() => {
     // queryType()
     // queryShopList(pageIndex, listParams)
 })
-
-/**
- * 获取商品所有种类
- */
-// const queryType = async() => {
-//     const { ReturnData } = await getGoodsType({})
-//     // typeList.list = ReturnData.typeList
-// }
 
 /**
  * 获取商家列表

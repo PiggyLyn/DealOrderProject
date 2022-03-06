@@ -29,13 +29,13 @@
             </div>
              <ion-slides :options="slideOpts" ref="slides" @ionSlideDidChange="ionSlideDidChange">
                 <ion-slide class="orderSlide">
-                    <shop-order :menu-list="shopItem.item.menuList"/>
+                    <shop-order :menuList="shopItem.item.menuList" :shopID="shopItem.item.shopID"/>
                 </ion-slide>
-                <ion-slide>
+                <ion-slide class="commentSlide">
                     <shop-comment/>
                 </ion-slide>
-                <ion-slide>
-                    <shop-detail/>
+                <ion-slide class="detailSlide">
+                    <shop-detail :shopItem="shopItem.item"/>
                 </ion-slide>
             </ion-slides>
         </template>
@@ -177,7 +177,7 @@ const queryShopItem = async() => {
                 monthSell: 18, // 月售
                 prevCost: 79, // 原价
                 currentCost: 49, // 现价
-                content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
+                content: '好吃又营养',
                 cartCount: 0, // 加购数量
             }, {
                 foodID: 'plan2',
@@ -240,7 +240,21 @@ const queryShopItem = async() => {
                 content: '主要原料：肌肉、面包、火腿、可乐、生菜、色拉、番茄酱、淀粉',
                 cartCount: 0, // 加购数量
             }, ]
-        }, ]
+        }, ],
+        address: '广州市天河区天河北路998号', // 地址
+        beginTime: '9:00', // 开始营业时间
+        endTime: '22:00', // 结束营业时间
+        activity: [{
+            activeID: 'minus',
+            max: 50,
+            min: 10
+        }, {
+            activeID: 'onTime'
+        }, {
+            activeID: 'ticket'
+        }, {
+            activeID: 'safe'
+        }]
     }
     // 把第一个菜单添加isSelected属性为true，默认选中样式
     shopItem.item.menuList[0].isSelected = true
@@ -265,7 +279,6 @@ const closeCart = () => {
  * @description segment变化时触发，修改当前展示slide
  */
 const segmentChanged = (e: CustomEvent) => {
-    slides.value.$el.getActiveIndex().then(res => console.log(res))
     let slideIndex = 0
     if (e.detail.value === "order") {
         slideIndex = 0
@@ -295,9 +308,18 @@ const ionSlideDidChange = () => {
 <style lang="scss" scoped>
 ion-slides {
     // 100%是ion-content的高度，减去shopHead和shopSegment
-    height: calc(100% - 20rem - 4.8rem);
+    height: calc(100% - 20rem - 5rem);
     .orderSlide {
         display: block;
+    }
+    .commentSlide {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .detailSlide {
+        align-items: flex-start;
+        justify-content: flex-start;
     }
 }
 .shopHead {
@@ -323,7 +345,10 @@ ion-slides {
     }
 }
 .shopSegment {
-    max-height: 4.8rem;
+    max-height: 5rem;
+    ion-segment {
+        border-bottom: 1px solid #c8c7cc;
+    }
 }
 .footerContent {
     background: #fff;

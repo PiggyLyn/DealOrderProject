@@ -12,6 +12,12 @@ const homeModules: Array<RouteRecordRaw> = [
         name:'ShopItem',
         path: "/shopItem",
         component: () => import("@/views/Home/ShopItem.vue"),
+    },
+    // 商品详情页
+    {
+        name:'FoodItem',
+        path: "/foodItem",
+        component: () => import("@/views/Home/FoodItem.vue"),
     }
 ]
 
