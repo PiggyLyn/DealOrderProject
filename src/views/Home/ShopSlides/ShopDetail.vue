@@ -1,7 +1,7 @@
 <template>
     <div class="shopDetail">
         <div class="shopActivity">
-            <div class="title">活动与优惠</div>
+            <div class="title">活动与属性</div>
             <ion-list>
                 <ion-item class="text" v-if="shopItem.activity?.length === 0">暂无优惠活动</ion-item>
                 <ion-item

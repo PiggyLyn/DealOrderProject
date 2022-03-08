@@ -1,7 +1,11 @@
 <template>
     <base-layout :pageTitle="pageTitle">
+        <template #header>
+            <filter-cpn/>
+        </template>
         <template #content>
             <ion-refresher
+            mode="md"
             slot="fixed"
             @ionRefresh="doRefresh($event)"
             class="listRefresher"
@@ -11,7 +15,6 @@
             <shop-list-cpn :list="shopList.list"/>
             <ion-infinite-scroll
                 @ionInfinite="loadData($event)"
-                threshold="100px"
                 id="infinite-scroll"
                 :disabled="isDisabled"
             >
@@ -38,6 +41,7 @@ const route = useRoute()
 let pageIndex = 1;
 let isDisabled = ref(false);
 let pageTitle:any = ref('')
+
 
 // 商家列表
 const shopList = reactive({
@@ -201,12 +205,14 @@ const queryShopList = async(index:number, params:any) => {
 </script>
 
 <style lang='scss' scoped>
-
+.listRefresher {
+    // background: red;
+}
 </style>
 
 <style lang="scss">
 ion-refresher.refresher-active {
-    // background: red!important;
+    // 
 }
 
 </style>

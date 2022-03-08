@@ -50,7 +50,7 @@ const goShopItem = (id:any) => {
 </script>
 <style lang="scss" scoped>
 .shopListCpn {
-    margin-top: 0.8rem;
+    // margin-top: 0.8rem;
     .listItem {
         --padding-top: 1rem;
         --padding-end: 1rem;

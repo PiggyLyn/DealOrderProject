@@ -244,7 +244,7 @@ const queryShopItem = async() => {
         address: '广州市天河区天河北路998号', // 地址
         beginTime: '9:00', // 开始营业时间
         endTime: '22:00', // 结束营业时间
-        activity: [{
+        activity: [{ // 活动与属性
             activeID: 'minus',
             max: 50,
             min: 10
@@ -254,7 +254,8 @@ const queryShopItem = async() => {
             activeID: 'ticket'
         }, {
             activeID: 'safe'
-        }]
+        }], 
+        shopType: ['burger', 'cake', 'delicious']
     }
     // 把第一个菜单添加isSelected属性为true，默认选中样式
     shopItem.item.menuList[0].isSelected = true
