@@ -1,7 +1,7 @@
 <template>
     <base-layout :pageTitle="pageTitle">
         <template #header>
-            <filter-cpn/>
+            <filter-cpn @closeFilter="closeFilter"/>
         </template>
         <template #content>
             <ion-refresher
@@ -41,7 +41,12 @@ const route = useRoute()
 let pageIndex = 1;
 let isDisabled = ref(false);
 let pageTitle:any = ref('')
-
+const queryParam = {
+    menuID: route.params.code, // 大菜单的id
+    typeID: '', // 小菜单的id
+    orderID: '', // 排序的id
+    otherIDs: '' // 其他筛选的id，多个以英文逗号分隔
+}
 
 // 商家列表
 const shopList = reactive({
@@ -153,6 +158,7 @@ const shopList2 = reactive({
 
 onMounted(() => {
     pageTitle.value = route.params.label
+    queryShopList(pageIndex, queryParam);
 })
 
 /**
@@ -161,7 +167,7 @@ onMounted(() => {
 const doRefresh = (event: CustomEvent) => {
     pageIndex = 1;
     setTimeout(() => {
-        queryShopList(pageIndex, {});
+        queryShopList(pageIndex, queryParam);
         (event.target as any).complete();
     }, 500);
 }
@@ -172,7 +178,7 @@ const doRefresh = (event: CustomEvent) => {
 const loadData = (ev: CustomEvent) => {
     pageIndex++;
     setTimeout(() => {
-        queryShopList(pageIndex, {}).then(() => {
+        queryShopList(pageIndex, queryParam).then(() => {
             (ev.target as any).complete();
         });
     }, 500);
@@ -184,6 +190,7 @@ const loadData = (ev: CustomEvent) => {
  * @param params 传给后端的参数
  */
 const queryShopList = async(index:number, params:any) => {
+    console.log(params)
     // const { ReturnData, RetCode } = await getShopList(params,{ pageIndex:index, pageSize: 10 })
     // if (RetCode === ResultEnum.SUCCESS) {
     //     // 如果是第一页，则直接赋值；否则拼接（加载更多）
@@ -201,6 +208,31 @@ const queryShopList = async(index:number, params:any) => {
         shopList.list = [...shopList.list, ...shopList2.list];
         isDisabled.value = true
     }
+}
+
+/**
+ * filter关闭，处理逻辑
+ */
+const closeFilter = (data:any) => {
+    // 遍历三个筛选
+    data.filterBtn.forEach(item => {
+        if (item.btnID === 'allType') {
+            const menu = item.List.find(ele => ele.isSelected)
+            queryParam.menuID = menu.typeID
+            const type = menu.types.find(ele => ele.isSelected)
+            queryParam.typeID = type.id
+        } else if (item.btnID === 'order') {
+            const order = item.List.find(ele => ele.isSelected)
+            queryParam.orderID = order?.id ? order.id : ''
+        } else if (item.btnID === 'other') {
+            const arr = []
+            item.List.forEach(ele => {
+                const otherArr = ele.btns.filter(el => el.isSelected)
+                otherArr.map(i => arr.push(i.btnID))
+            })
+            queryParam.orderID = arr.join(',')
+        }
+    })
 }
 </script>
 

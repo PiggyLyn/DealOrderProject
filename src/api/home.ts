@@ -59,7 +59,7 @@ http.request({
 })
 
 /**
- * @description 接口名：获取种类商店数量
+ * @description 接口名：获取各种种类的商店数量
  * @param params 需要传给后台的参数
  */
  export const getTypeNum = (params: any) =>
