@@ -18,6 +18,12 @@ const homeModules: Array<RouteRecordRaw> = [
         name:'FoodItem',
         path: "/foodItem",
         component: () => import("@/views/Home/FoodItem.vue"),
+    },
+    // 结算页面
+    {
+        name:'AccountPage',
+        path: "/account",
+        component: () => import("@/views/Home/AccountPage.vue"),
     }
 ]
 

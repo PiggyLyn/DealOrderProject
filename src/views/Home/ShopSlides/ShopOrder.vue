@@ -36,9 +36,9 @@
                     <div class="cost">
                         <span class="currentCost">￥{{ele.currentCost}}</span>
                         <span class="btnContainer">
-                            <ion-button class="minus" :disabled="ele.cartCount===0" @click="cartCountMinus(ele)">-</ion-button>
+                            <ion-button class="minus" :disabled="ele.cartCount===0" @click.stop="cartCountMinus(ele)">-</ion-button>
                             <ion-input :disabled="true" :value="ele.cartCount"></ion-input>
-                            <ion-button class="plus"  @click="cartCountPlus(ele)">+</ion-button>
+                            <ion-button class="plus"  @click.stop="cartCountPlus(ele)">+</ion-button>
                         </span>
                     </div>
                 </div>

@@ -47,7 +47,7 @@
                     <span class="postage">配送费￥{{shopItem.item.postage}}</span>
                 </div>
             </div>
-            <ion-button class="right" expand="full" :disabled="btnIsDisabled">{{btnText}}</ion-button>
+            <ion-button class="right" expand="full" :disabled="btnIsDisabled" @click="gotoAccount">{{btnText}}</ion-button>
         </ion-footer>
     </base-layout>
 </template>
@@ -60,13 +60,15 @@ import { getShopItem } from '@/api/home'
 import { ResultEnum } from '@/utils/http/types';
 import { toast } from '@/utils/message/toast';
 import { cart } from 'ionicons/icons'
-import { IonSegment, IonSegmentButton, IonSlides, IonSlide, IonItem, onIonViewWillLeave } from '@ionic/vue';
+import { IonSegment, IonSegmentButton, IonSlides, IonSlide, IonItem, onIonViewWillLeave, onIonViewWillEnter } from '@ionic/vue';
 import ShopOrder from "./ShopSlides/ShopOrder.vue"
 import ShopComment from "./ShopSlides/ShopComment.vue"
 import ShopDetail from "./ShopSlides/ShopDetail.vue"
 import eventBus from "@/utils/common/EventBus";
 import { originModal } from "@/utils/message/alertModal";
 import CartCpn from "./components/CartCpn.vue"
+import router from '@/router';
+import { log } from 'util';
 
 
 const route = useRoute()
@@ -148,6 +150,10 @@ onIonViewWillLeave(() => {
     showFooter.value = false
 })
 
+onIonViewWillEnter(() => {
+    showFooter.value = true
+})
+
 /**
  * @description 获取商家详情
  */
@@ -163,6 +169,7 @@ const queryShopItem = async() => {
         shopName: '肯德基',
         postage: 5, // 配送费
         minCost: 50, // 起送价
+        packageCost: 0.5, // 打包费
         time: 30, // 配送时间
         star: 4.5, // 评分
         monthSell: 520, // 月销量
@@ -255,7 +262,8 @@ const queryShopItem = async() => {
         }, {
             activeID: 'safe'
         }], 
-        shopType: ['burger', 'cake', 'delicious']
+        shopType: ['burger', 'cake', 'delicious'], // 分类
+
     }
     // 把第一个菜单添加isSelected属性为true，默认选中样式
     shopItem.item.menuList[0].isSelected = true
@@ -304,6 +312,22 @@ const ionSlideDidChange = () => {
             segmentValue.value = 'detail'
         }
     })
+}
+
+/**
+ * @desc 结算
+ */
+const gotoAccount = () => {
+    console.log(cartData.list)
+    const params:any = {
+        shopID: shopItem.item.shopID,
+        shopName: shopItem.item.shopName,
+        packageCost: shopItem.item.packageCost,
+        postage: shopItem.item.postage,
+        time: shopItem.item.time,
+        cartData: JSON.stringify(cartData.list)
+    }
+    router.push({name: 'AccountPage', params})
 }
 </script>
 <style lang="scss" scoped>

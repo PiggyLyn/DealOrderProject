@@ -1,21 +1,12 @@
 import { RouteRecordRaw } from 'vue-router';
 /** @type {*} */
 const myselfModules: Array<RouteRecordRaw> = [
+    // 新建地址页
     {
-        name:'ScanLogin',
-        path: "/scanLogin",
-        component: () => import("@/views/MySelf/ScanLogin.vue")
-    },
-    {
-        name:'ScaningCode',
-        path: "/scaningCode",
-        component: () => import("@/components/Scan/ScaningCode.vue")
-    },
-    {
-        name:'EditPassword',
-        path: "/editPassword",
-        component: () => import("@/views/MySelf/EditPassword.vue")
-    },
+        name:'AddressPage',
+        path: "/address",
+        component: () => import("@/views/MySelf/AddressPage.vue"),
+    }
 ]
 
 export default myselfModules
