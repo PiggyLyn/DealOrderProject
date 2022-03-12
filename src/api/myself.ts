@@ -1,13 +1,24 @@
 import http from "@/utils/http";
+import { PagingParams } from "@/utils/http/types";
+    
+/**
+* 新增、编辑地址
+* @param 
+*/
+export const postAddress = (data: any) =>
+http.request({
+    url: "/api/MySelf/postAddress",
+    method: 'post',
+    data
+})
 
-   /**
-  * 重命名附件
-  * @param params ：修改密码接口
-  */
-    export const editPassWord = (data: any, isLoading?: boolean) =>
-    http.request({
-        url: "/api/Login/Password",
-        method: 'put',
-        data,
-        isLoading
-    })
+/**
+* 新增、编辑地址
+* @param 
+*/
+export const getAddress = (params: any) =>
+http.request({
+    url: "/api/MySelf/getAddress",
+    method: 'get',
+    params,
+})

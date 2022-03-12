@@ -113,6 +113,7 @@ const gotoDetail = (foodItem:any) => {
     display: flex;
     height: 100%;
     .leftMenu {
+        padding: 0;
         width: 25%;
         height: 100%;
         background: #f3f3f3;
@@ -131,6 +132,7 @@ const gotoDetail = (foodItem:any) => {
         }
     }
     .rightList {
+        padding: 0;
         width: 75%;
         height: 100%;
         background: transparent;

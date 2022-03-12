@@ -119,7 +119,7 @@ const ionBackdropTap = () => {
         bottom: 0;
         position: absolute;
         z-index: 999999;
-        background: pink;
+        // background: pink;
         .cartItem {
             --padding-start: 1rem;
             --padding-end: 1rem;

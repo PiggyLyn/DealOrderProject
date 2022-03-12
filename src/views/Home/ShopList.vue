@@ -214,6 +214,7 @@ const queryShopList = async(index:number, params:any) => {
  * filter关闭，处理逻辑
  */
 const closeFilter = (data:any) => {
+    console.log(data.filterBtn)
     // 遍历三个筛选
     data.filterBtn.forEach(item => {
         if (item.btnID === 'allType') {

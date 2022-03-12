@@ -1,10 +1,10 @@
 <template>
     <ion-page>
-        <ion-header class=" header ion-no-border" mode="ios">
-            <ion-toolbar class="toolbar" mode="ios">
-                <ion-buttons slot="start">
-                    <ion-back-button default-href="home" color="danger" @click="dismiss" mode="ios"></ion-back-button>
-                </ion-buttons>
+        <ion-header class=" header ion-no-border">
+            <ion-toolbar class="toolbar">
+                <!-- <ion-buttons slot="start">
+                    <ion-back-button default-href="home" @click="dismiss" mode="ios"></ion-back-button>
+                </ion-buttons> -->
                 <ion-title v-if="isShowTitle">{{ props.pageTitle }}</ion-title>
                 <slot name="title" />
 

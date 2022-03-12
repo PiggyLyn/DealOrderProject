@@ -4,7 +4,11 @@
             <!-- 地址区域 -->
             <ion-list class="topConteiner">
                 <ion-item @click="gotoAddress" button>
-                    新建地址
+                    <span v-if="addressList.list.length === 0">新建地址</span>
+                    <div class="addressContainer" v-else>
+                        <span class="title">{{currentAddress.address}}</span>
+                        <span class="text">{{currentAddress.name}} {{currentAddress.phone}}</span>
+                    </div>
                 </ion-item>
                 <ion-item button>
                     立即送出
@@ -16,32 +20,13 @@
                 </ion-item>
             </ion-list>
             <!-- 购物车列表 -->
-            <div class="cartContainer">
-                <div class="header">{{shopName}}</div>
-                <ion-list>
-                    <ion-item
-                    class="item"
-                    v-for="item in cartData"
-                    :key="item.foodID"
-                    >
-                    {{item.foodLabel}}
-                    <span slot="end" class="text">￥{{item.currentCost}} x {{item.cartCount}}</span>
-                    </ion-item>
-                    <ion-item class="cost">
-                        <span class="title">包装费</span>
-                        <span slot="end" class="text">￥{{packageCost}}</span>
-                    </ion-item>
-                    <ion-item class="cost">
-                        <span class="title">配送费</span>
-                        <span slot="end" class="text">￥{{postage}}</span>
-                    </ion-item>
-                </ion-list>
-                <div class="total">小计￥{{total}}</div>
-            </div>
+            <order-detail-cpn :orderInfo="orderInfo"></order-detail-cpn>
             <!-- 底部区域 -->
             <ion-list class="bottomConteiner">
-                <ion-item button>
+                <ion-item button @click="openTextarea">
                     订单备注
+                    <span slot="end" class="text" v-if="orderInfo.note == ''">点击输入订单备注</span>
+                    <span slot="end" class="text" v-else>{{orderInfo.note}}</span>
                 </ion-item>
                 <ion-item button>
                     餐具份数
@@ -62,15 +47,26 @@
 
 <script lang="ts" setup>
 import BaseLayout from '@/components/Layout/BaseLayout.vue';
-import router from '@/router';
-import { onIonViewWillEnter, onIonViewWillLeave } from '@ionic/vue';
+import { onIonViewWillEnter, onIonViewWillLeave, IonTextarea } from '@ionic/vue';
 import { onMounted, reactive, ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { getAddress } from '@/api/myself'
+import { ResultEnum } from '@/utils/http/types';
+import { useUserStore } from '@/store/modules/user';
+import { toast } from '@/utils/message/toast';
+import { originModal } from '@/utils/message/alertModal';
+import AddressModal from '../MySelf/AddressModal.vue'
+import { customModalTextareaAlert } from '@/utils/message/alertModal'
+import eventBus from '@/utils/common/EventBus';
+import { postOrder } from '@/api/order'
+import OrderDetailCpn from '../Order/components/OrderDetailCpn.vue';
 
 const route = useRoute()
-// 购物车列表
-// const routeCart:any = route.params.cartData
+const router = useRouter()
+const userStore = useUserStore()
+
 let { shopID, shopName, packageCost, postage, time, cartData }:any = route.params
+// 购物车列表
 cartData = JSON.parse(cartData)
 // 总计
 const total = computed(() => {
@@ -80,7 +76,39 @@ const total = computed(() => {
     })
     return num
 })
+
 const showFooter = ref(true)
+// 地址列表
+let addressList = reactive({
+    list: []
+})
+// 当前选中的地址
+let currentAddress:any = ref({
+})
+// 订单信息（提交给后台的信息）
+let orderInfo:any = ref({
+    // orderID: '', // 订单编号，唯一标识符
+    userID: userStore.UserID, // 当前帐号id
+    shopID, // 当前商家id
+    receieveInfo: currentAddress, // 收货信息（收货姓名、手机号、地址）
+    cartData, // 购买商品信息
+    note: '', //备注信息
+    // status: 0, // 订单状态 0待支付 1已支付
+    date: '', // 下单时间yy-mm-dd hh:mm:ss
+    // 额外的属性，后端不必处理的数据，用于传给order组件展示数据的
+    shopName, // 当前商家名称
+    total, // 订单金额
+    packageCost, // 打包费
+    postage, // 配送费
+})
+
+eventBus.on('addedAddress', (data:any) => {
+    console.log(data)
+})
+
+onMounted(() => {
+    queryAddress()
+})
 
 onIonViewWillLeave(() => {
     showFooter.value = false
@@ -90,18 +118,60 @@ onIonViewWillEnter(() => {
     showFooter.value = true
 })
 
+const openTextarea = () => {
+    customModalTextareaAlert('', '请输入订单备注', orderInfo.value.note).then((res:any) => {
+        if (res.data) {
+            orderInfo.value.note = res.data
+        }
+    })
+}
+
+/**
+ * @desc 查询用户的地址
+ */
+const queryAddress = async() => {
+    // const { ReturnData, Message, RetCode } = await getAddress({ userID: userStore.LoginID })
+    // if (RetCode === ResultEnum.SUCCESS) {
+    //     addressList.list = ReturnData.list
+    // } else {
+    //     toast(Message)
+    // }
+    addressList.list = [{
+        addressID: 'add1',
+        area: '广东省广州市',
+        address: '天河区信源大厦3018',
+        name: '吴先生',
+        phone: '13229955664'
+    }, {
+        addressID: 'add2',
+        area: '广东省广州市',
+        address: '广东省广州市南沙区碧桂园',
+        name: '吴小姐',
+        phone: '13229955664'
+    }]
+    currentAddress.value = addressList.list[0]
+}
+
 /**
  * @desc 支付
  */
-const goPay = () => {
+const goPay = async() => {
     console.log("zhifu")
+    // const { RetCode, ReturnData, Message } = await postOrder({orderInfo})
 }
 
 /**
  * @desc 创建地址
  */
 const gotoAddress = () => {
-    router.push({name: 'AddressPage', params: {}})
+    if (addressList.list.length === 0) {
+        router.push({name: 'AddressPage', params: {}})
+    } else {
+        originModal(AddressModal, 'address-modal', { list: addressList.list, checkedID: currentAddress.value.addressID }, { showBackdrop: true, backdropDismiss: false }).then((res: any) => {
+            console.log(res.data)
+            currentAddress.value = addressList.list.find(item => item.addressID === res.data)
+        })
+    }
 }
 </script>
 
@@ -136,39 +206,9 @@ const gotoAddress = () => {
     ion-item:last-child {
         --inner-border-width: 0;
     }
-}
-.cartContainer {
-    background: #fff;
-    padding: 2rem 1rem;
-    margin: 2rem 0;
-    // border-top: 1px solid rgb(25, 137, 250);
-    // border-bottom: 1px solid rgb(25, 137, 250);
-    .header {
-        font-size: 1.8rem;
-        color: rgb(25, 137, 250);
-    }
-    ion-list {
-        margin-top: 1rem;
-        border-bottom: 1px solid #f5f5f5;
-        border-top: 1px solid #f5f5f5;
-    }
-    .item {
-        font-size: 1.4rem;
-        --inner-border-width: 0;
-    }
-    .total {
-        text-align: right;
-        font-size: 1.4rem;
-        margin: 1rem 2rem 0 0;
-    }
-    .cost {
-        .title {
-            color: #fff;
-            font-size: 1.2rem;
-            background: rgb(242, 130, 106);
-            padding: .3rem .5rem;
-            border-radius: .3rem;
-        }
+    .addressContainer {
+        display: flex;
+        flex-direction: column;
     }
 }
 </style>

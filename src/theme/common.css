@@ -43,6 +43,12 @@
     color: #000;
 }
 
+.address-modal::part(content) {
+    height: 50%;
+    top: 50%;
+    position: absolute;
+}
+
 .cartModal {
     --background: #fff;
     color: red;

@@ -96,6 +96,7 @@ import { reactive, ref, watch } from 'vue';
 import { caretDownOutline, checkmarkOutline } from 'ionicons/icons'
 import { IonBadge } from '@ionic/vue';
 import { useRoute } from 'vue-router';
+import { log } from 'util';
 
 const route = useRoute()
 // 控制是否显示筛选内容
@@ -210,7 +211,7 @@ watch(() => isShow.value, () => {
     if(isShow.value && isFirstChoose) {
         // 从home进来，默认选中对应右边菜单第一项
         // if (currentFilter.item.btnID === 'allType' && isFirstChoose) {
-            const leftMenu = filterBtn[0].List.find((ele:any) => ele.typeID === route.params.code)
+            const leftMenu = reactive(filterBtn[0].List.find((ele:any) => ele.typeID === route.params.code))
             if (leftMenu) {
                 leftMenu.isSelected = true
                 rightMenu.List[0].isSelected = true
@@ -311,9 +312,20 @@ const ionBackdropTap = () => {
  * @desc 关闭filter并通知父组件
  */
 const closeFilter = () => {
-    filterBtn.forEach((ele:any) => {
-        ele.isSelected = false
-    })
+    // filterBtn.forEach((ele:any) => {
+    //     ele.isSelected = false
+    //     if (ele.btnID === 'allType') {
+    //         ele.List.forEach(item => {
+    //             if (item.isSelected) {
+    //                 let itemSelected = false;
+    //                 item.types.forEach((el:any, index:number) => {
+    //                     itemSelected = el.isSelected
+    //                     item.isSelected = !(!itemSelected && index === item.types.length - 1)
+    //                 })
+    //             }
+    //         })
+    //     }
+    // })
     isShow.value = false
     emit('closeFilter', {filterBtn});
 }
@@ -417,6 +429,7 @@ const closeFilter = () => {
         .leftMenu, .rightMenu {
             flex: 1;
             overflow-y: auto;
+            padding: 0;
         }
         .leftMenu {
             background: #f1f1f1;

@@ -44,8 +44,16 @@ const props = withDefaults(defineProps<BaseLayoutProps>(), {
 </script>
 
 <style lang="scss" scoped>
+ion-back-button {
+    --min-height: 3rem;
+    min-width: 1rem;
+    height: 4.4rem;
+    --padding-start: 0;
+    --padding-end: 0;
+}
 .header {
     .toolbar {
+        --min-height: 4.4rem;
         --background: #3190e8;
         --padding-start: 1.5rem;
         --padding-end: 1.5rem;

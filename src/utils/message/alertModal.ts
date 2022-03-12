@@ -181,6 +181,41 @@ export const customModalPromptAlert = async (title: string, placeholder: string,
 };
 
 /**
+ * 自定义的富文本弹窗服务，通过modal组件改装
+ * 确定按钮，返回输入框的值
+ * 取消按钮，不返回值
+ * @param title
+ * @param placeholder
+ */
+ export const customModalTextareaAlert = async (title: string, placeholder: string, inputVal?:string) => {
+  const packages: FitsAlert = {
+    title,
+    type: "textarea",
+    inputVal,
+    isShowBtn: true,
+    isRequired: true,
+    placeholder,
+    enableBackdropDismiss: false,
+    isShowTitle: false
+  };
+  const pages = await modalController.create({
+    component: AlertModal,
+    cssClass: cssClass,
+    componentProps: { packages },
+    enterAnimation: ModalScaleEnter,
+    leaveAnimation: ModalScaleLeave,
+  });
+  pages.present();
+  return new Promise((resolve) => {
+    pages.onDidDismiss().then((data) => {
+      if (data) {
+        resolve(data);
+      }
+    });
+  });
+};
+
+/**
  * 自定义的输入框弹窗服务，通过modal组件改装
  * 确定按钮，返回输入框的值
  * 取消按钮，不返回值

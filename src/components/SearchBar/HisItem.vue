@@ -1,5 +1,5 @@
 <template>
-    <modal-layout>
+    <modal-layout :isShowTitle="false">
         <template #title>
             <div class="search_container">
                 <ion-searchbar
@@ -46,6 +46,7 @@ import { searchBtnType } from "@/types/searchBtnType"
 import { CreateIndexedStorage } from '@/utils/storage/indexedDB';
 import { useUserStore } from "@/store/modules/user";
 import { useRoute } from "vue-router";
+import { isAndroid } from "@/utils/is";
 // import { nextTick } from "process";
 
 const props = withDefaults(
@@ -101,9 +102,10 @@ vm = new CreateIndexedStorage(componentName, dbName)
 // 把父子传过来的值赋值
 onMounted(() => {
     setTimeout(() => {
-        search.value.$el.querySelector("input").focus()
-        console.log(props.placeholder)
-    }, 200)
+        if (isAndroid()) {
+            search.value.$el.setFocus()
+        }
+    }, 500);
 
     if (route.params.MessageCode ?? '' !== '') {
         tableName.value = getKey(route.params.MessageCode)
@@ -217,18 +219,14 @@ const handlePush = (val: number) => {
         margin-left: 0.5rem;
     }
 }
-
-
 .history_container {
     padding: 1.6rem 1.5rem;
     width: 100%;
 }
-
 .history_title {
     font-size: 1.4rem;
     color: #7d90b0;
 }
-
 .history_content {
     display: flex;
     flex-flow: row wrap;
@@ -244,7 +242,6 @@ const handlePush = (val: number) => {
     margin-top: 1rem;
     z-index: 12;
 }
-
 .delete_history {
     margin-top: 12.5rem;
     text-align: center;

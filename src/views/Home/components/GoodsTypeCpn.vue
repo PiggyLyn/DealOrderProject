@@ -59,7 +59,7 @@ const router = useRouter()
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
-    loop: true,
+    loop: false,
 };
 
 
@@ -67,7 +67,6 @@ const slideOpts = {
  * 跳转商家列表页
  */
 const goShopList = (item:any) => {
-    console.log(item)
     router.push({name: 'ShopList', params: { code:item.code, label:item.label }})
 }
 </script>

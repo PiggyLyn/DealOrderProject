@@ -68,9 +68,9 @@ import eventBus from "@/utils/common/EventBus";
 import { originModal } from "@/utils/message/alertModal";
 import CartCpn from "./components/CartCpn.vue"
 import router from '@/router';
-import { log } from 'util';
+import { useUserStore } from '@/store/modules/user';
 
-
+const userStore = useUserStore()
 const route = useRoute()
 // 商家id
 const shopID = route.params.id
@@ -305,10 +305,13 @@ const segmentChanged = (e: CustomEvent) => {
 const ionSlideDidChange = () => {
     slides.value.$el.getActiveIndex().then(res => {
         if (res === 0) {
+            showFooter.value = true
             segmentValue.value = 'order'
         } else if (res === 1) {
+            showFooter.value = false
             segmentValue.value = 'comment'
         } else if (res === 2) {
+            showFooter.value = false
             segmentValue.value = 'detail'
         }
     })
@@ -318,14 +321,13 @@ const ionSlideDidChange = () => {
  * @desc 结算
  */
 const gotoAccount = () => {
-    console.log(cartData.list)
     const params:any = {
         shopID: shopItem.item.shopID,
         shopName: shopItem.item.shopName,
         packageCost: shopItem.item.packageCost,
         postage: shopItem.item.postage,
         time: shopItem.item.time,
-        cartData: JSON.stringify(cartData.list)
+        cartData: JSON.stringify(cartData.list),
     }
     router.push({name: 'AccountPage', params})
 }
