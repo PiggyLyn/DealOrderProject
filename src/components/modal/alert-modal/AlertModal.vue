@@ -4,9 +4,6 @@
         <div class="my-modal-wrapper">
             <ion-label
                 class="modal-header"
-                :style="
-                    myPackages.type === 'prompt' || myPackages.type === 'confirm' ? '' : 'border-bottom: 1px solid #dedede;'
-                "
                 v-if="myPackages.isShowTitle !== false"
             >{{ myPackages.title }}</ion-label>
 
@@ -81,15 +78,20 @@
 
             <ion-item class="my-modal-footer" v-if="myPackages.isShowBtn">
                 <ion-label
-                    class="cancel"
-                    tappable
-                    @click="cancel"
-                >{{ myPackages.cancleBtnText ? myPackages.cancleBtnText : "取消" }}</ion-label>
+                v-if="myPackages.isShowCancelBtn"
+                class="cancel"
+                tappable
+                @click="cancel"
+                >
+                    {{ myPackages.cancleBtnText ? myPackages.cancleBtnText : "取消" }}
+                </ion-label>
                 <ion-label
-                    class="ok"
-                    tappable
-                    @click="ok"
-                >{{ myPackages.okBtnText ? myPackages.okBtnText : "确定" }}</ion-label>
+                class="ok"
+                tappable
+                @click="ok"
+                >
+                    {{ myPackages.okBtnText ? myPackages.okBtnText : "确定" }}
+                </ion-label>
             </ion-item>
         </div>
     </div>
@@ -232,6 +234,8 @@ ion-textarea {
     --background: #eee;
     text-align: left;
     --padding-start: .8rem;
+    width: 90%;
+    margin: auto;
 }
 .my-modal-box {
     width: 100%;
@@ -244,6 +248,7 @@ ion-textarea {
     align-items: center;
     justify-content: center;
     .my-modal-wrapper {
+        padding: 1rem 1rem 0 1rem;
         position: relative;
         z-index: 5;
         width: 25rem;
@@ -260,14 +265,14 @@ ion-textarea {
             color: #333;
             width: 100%;
             text-align: center;
-            min-height: 50px;
+            // min-height: 3.5rem;
             font-weight: 600;
         }
         .modal-content {
             width: 100%;
             max-height: 20rem;
             overflow-y: auto;
-            padding: 1.5rem;
+            padding: 1.5rem 0;
             font-size: 1.5rem;
             text-align: center;
             ion-input {
@@ -310,18 +315,17 @@ ion-textarea {
         }
         .my-modal-footer {
             height: 4rem;
-            display: flex;
+            // display: flex;
             flex-flow: row nowrap;
             align-items: center;
             justify-content: center;
             min-height: 50px;
-            border-top: 1px solid #dedede;
+            // border-top: 1px solid #dedede;
             --inner-padding-end: 0;
             &::part(native) {
                 padding: 0;
             }
             ion-label {
-                width: 50%;
                 height: 4rem;
                 min-height: 50px;
                 text-align: center;

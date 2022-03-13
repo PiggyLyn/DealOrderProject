@@ -214,6 +214,7 @@ watch(() => isShow.value, () => {
             const leftMenu = reactive(filterBtn[0].List.find((ele:any) => ele.typeID === route.params.code))
             if (leftMenu) {
                 leftMenu.isSelected = true
+                rightMenu.List = leftMenu.types
                 rightMenu.List[0].isSelected = true
             }
         // }
@@ -312,20 +313,8 @@ const ionBackdropTap = () => {
  * @desc 关闭filter并通知父组件
  */
 const closeFilter = () => {
-    // filterBtn.forEach((ele:any) => {
-    //     ele.isSelected = false
-    //     if (ele.btnID === 'allType') {
-    //         ele.List.forEach(item => {
-    //             if (item.isSelected) {
-    //                 let itemSelected = false;
-    //                 item.types.forEach((el:any, index:number) => {
-    //                     itemSelected = el.isSelected
-    //                     item.isSelected = !(!itemSelected && index === item.types.length - 1)
-    //                 })
-    //             }
-    //         })
-    //     }
-    // })
+    filterBtn.map((item:any) => item.isSelected = false)
+    // console.log(filterBtn)
     isShow.value = false
     emit('closeFilter', {filterBtn});
 }

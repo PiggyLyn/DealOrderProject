@@ -14,9 +14,10 @@
                                 <span class="title">{{item.address}}</span>
                                 <span class="text">{{item.name}} {{item.phone}}</span>
                             </div>
+                            <ion-icon :icon="createOutline" slot="end" @click="goAddressForm(item)"></ion-icon>
                         </ion-item>
                     </ion-radio-group>
-                    <ion-button class="addBtn" @click="gotoAddress">
+                    <ion-button class="addBtn" @click="goAddressForm({})">
                         <ion-icon :icon="addCircleOutline"></ion-icon>
                         新增地址
                         </ion-button>
@@ -33,7 +34,7 @@
 
 <script lang="ts" setup>
 import { IonRadio, IonRadioGroup, modalController } from "@ionic/vue";
-import { closeOutline, addCircleOutline } from "ionicons/icons";
+import { closeOutline, addCircleOutline, createOutline } from "ionicons/icons";
 import { onMounted, reactive, ref } from "vue";
 import ModalLayout from "@/components/Layout/ModalLayout.vue";
 import { useRouter } from "vue-router";
@@ -80,7 +81,18 @@ const changeAddress = () => {
  */
 const gotoAddress = () => {
     modalController.dismiss(currentID);
-    router.push({name: 'AddressPage', params: {}})
+    router.push({name: 'AddressForm', params: {}})
+}
+
+/**
+ * @desc 跳转新建地址页面
+ */
+const goAddressForm = (item:any) => {
+    modalController.dismiss(currentID);
+    if (item.addressID === undefined) {
+        item = { addressID: '', area: '', address: '', name: '', phone: '' }
+    }
+    router.push({ name: 'AddressForm', params: {item: JSON.stringify(item)} })
 }
 </script>
 

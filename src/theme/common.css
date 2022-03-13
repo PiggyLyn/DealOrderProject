@@ -1,5 +1,8 @@
 /*==========toast弹出提示自定义样式==========*/
 
+* {
+    touch-action: none;
+}
 .bottomOrTopToastStyle {
     --background: none;
 }
@@ -46,6 +49,11 @@
 .address-modal::part(content) {
     height: 50%;
     top: 50%;
+    position: absolute;
+}
+.password-modal::part(content) {
+    height: 90%;
+    top: 10%;
     position: absolute;
 }
 

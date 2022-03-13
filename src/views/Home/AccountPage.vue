@@ -50,7 +50,7 @@ import BaseLayout from '@/components/Layout/BaseLayout.vue';
 import { onIonViewWillEnter, onIonViewWillLeave, IonTextarea } from '@ionic/vue';
 import { onMounted, reactive, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getAddress } from '@/api/myself'
+import { getAddressList } from '@/api/myself'
 import { ResultEnum } from '@/utils/http/types';
 import { useUserStore } from '@/store/modules/user';
 import { toast } from '@/utils/message/toast';
@@ -118,8 +118,11 @@ onIonViewWillEnter(() => {
     showFooter.value = true
 })
 
+/**
+ * @desc 打开备注输入框
+ */
 const openTextarea = () => {
-    customModalTextareaAlert('', '请输入订单备注', orderInfo.value.note).then((res:any) => {
+    customModalTextareaAlert('备注', '请输入订单备注', true, orderInfo.value.note).then((res:any) => {
         if (res.data) {
             orderInfo.value.note = res.data
         }
@@ -130,7 +133,7 @@ const openTextarea = () => {
  * @desc 查询用户的地址
  */
 const queryAddress = async() => {
-    // const { ReturnData, Message, RetCode } = await getAddress({ userID: userStore.LoginID })
+    // const { ReturnData, Message, RetCode } = await getAddressList({ userID: userStore.LoginID })
     // if (RetCode === ResultEnum.SUCCESS) {
     //     addressList.list = ReturnData.list
     // } else {
@@ -138,14 +141,14 @@ const queryAddress = async() => {
     // }
     addressList.list = [{
         addressID: 'add1',
-        area: '广东省广州市',
-        address: '天河区信源大厦3018',
+        area: '广东省 广州市 天河区',
+        address: '信源大厦3018',
         name: '吴先生',
         phone: '13229955664'
     }, {
         addressID: 'add2',
-        area: '广东省广州市',
-        address: '广东省广州市南沙区碧桂园',
+        area: '广东省 广州市 南沙区',
+        address: '碧桂园',
         name: '吴小姐',
         phone: '13229955664'
     }]
@@ -165,7 +168,7 @@ const goPay = async() => {
  */
 const gotoAddress = () => {
     if (addressList.list.length === 0) {
-        router.push({name: 'AddressPage', params: {}})
+        router.push({name: 'AddressForm', params: {}})
     } else {
         originModal(AddressModal, 'address-modal', { list: addressList.list, checkedID: currentAddress.value.addressID }, { showBackdrop: true, backdropDismiss: false }).then((res: any) => {
             console.log(res.data)

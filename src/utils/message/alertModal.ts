@@ -158,6 +158,7 @@ export const customModalPromptAlert = async (title: string, placeholder: string,
     title: title,
     type: "prompt",
     inputVal: inputVal,
+    isShowCancelBtn: true,
     isShowBtn: true,
     isRequired: true,
     placeholder: placeholder,
@@ -187,16 +188,17 @@ export const customModalPromptAlert = async (title: string, placeholder: string,
  * @param title
  * @param placeholder
  */
- export const customModalTextareaAlert = async (title: string, placeholder: string, inputVal?:string) => {
+ export const customModalTextareaAlert = async (title: string, placeholder: string, isShowTitle:boolean, inputVal?:string) => {
   const packages: FitsAlert = {
     title,
     type: "textarea",
     inputVal,
     isShowBtn: true,
+    isShowCancelBtn: true,
     isRequired: true,
     placeholder,
     enableBackdropDismiss: false,
-    isShowTitle: false
+    isShowTitle
   };
   const pages = await modalController.create({
     component: AlertModal,
@@ -225,20 +227,22 @@ export const customModalPromptAlert = async (title: string, placeholder: string,
 export const customModalConfirmAlert = async (
   content: string,
   title?: string,
+  isShowCancelBtn?: boolean,
   okBtnText = '确定',
   cancleBtnText = '取消',
-  isShowTitle = false
+  isShowTitle = true,
 ) => {
   const packages: FitsAlert = {
-    title: title,
-    isShowTitle: isShowTitle,
+    title,
+    isShowTitle,
     type: "confirm",
     isShowBtn: true,
     isRequired: true,
-    content: content,
-    okBtnText: okBtnText,
-    cancleBtnText: cancleBtnText,
+    content,
+    okBtnText,
+    cancleBtnText,
     enableBackdropDismiss: false,
+    isShowCancelBtn
   };
   const pages = await modalController.create({
     component: AlertModal,

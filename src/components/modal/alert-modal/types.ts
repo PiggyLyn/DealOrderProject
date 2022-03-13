@@ -19,6 +19,7 @@ export class FitsAlert {
     enableBackdropDismiss?: boolean; // 是否允许遮罩关闭弹窗
     datetimeWidth?: string // 自定义时间控件的宽度
     inputVal?: string //输入框的值
+    isShowCancelBtn?: boolean //显示取消按钮
     constructor(
         type = "",
         isRequired = false,
@@ -33,7 +34,8 @@ export class FitsAlert {
         content?: string,
         enableBackdropDismiss?: boolean,
         datetimeWidth = 'atuo',
-        inputVal = ''
+        inputVal = '',
+        isShowCancelBtn = true
     ) {
         this.title = title;
         this.radioArray = radioArray;
@@ -49,5 +51,6 @@ export class FitsAlert {
         this.enableBackdropDismiss = enableBackdropDismiss;
         this.datetimeWidth = datetimeWidth;
         this.inputVal = inputVal
+        this.isShowCancelBtn = isShowCancelBtn
     }
 }

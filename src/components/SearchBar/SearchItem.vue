@@ -51,7 +51,7 @@ const props: any = withDefaults(defineProps<Propss>(), {
 let InputVal = ref();
 
 const handleSearch = () => {
-    originModal(HisItem, '', { searchVal: InputVal.value, isButton: props.isButton, placeholder: props.placeholder }).then((res: any) => {
+    originModal(HisItem, '', { searchVal: InputVal.value, isButton: props.isButton, placeholder: props.placeholder }, {animated: false}).then((res: any) => {
         InputVal.value = res.data
     })
 }

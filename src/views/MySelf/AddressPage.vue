@@ -1,83 +1,88 @@
 <template>
-    <base-layout pageTitle="新建地址">
+    <base-layout pageTitle="我的地址">
+        <template #actionsBtn>
+            <ion-icon :icon="addCircleOutline" @click="goAddressForm({})"></ion-icon>
+        </template>
         <template #content>
-            <ion-item>
-                <ion-label>姓名</ion-label>
-                <ion-input placeholder="收货人姓名" :value="form.name" v-model="form.name"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label>电话</ion-label>
-                <ion-input placeholder="收货人手机号" :value="form.phone" v-model="form.phone"></ion-input>
-            </ion-item>
-            <ion-item button>
-                <span class="label">地区</span>
-                <div class="text">选择 省/市/区</div>
-            </ion-item>
-            <ion-item>
-                <ion-label>详细地址</ion-label>
-                <ion-input placeholder="街道门牌、房间号等信息" :value="form.address" v-model="form.address"></ion-input>
-            </ion-item>
-            <ion-button @click="save" expand="full">保存</ion-button>
+            <ion-list>
+                <ion-item v-for="item in addressList" :key="item.addressID">
+                    <div class="itemContainer">
+                        <span class="title">{{item.address}}</span>
+                        <span class="text">{{item.name}} {{item.phone}}</span>
+                    </div>
+                    <ion-icon :icon="createOutline" slot="end" @click="goAddressForm(item)"></ion-icon>
+                </ion-item>
+            </ion-list>
         </template>
     </base-layout>
 </template>
 
 <script lang="ts" setup>
 import BaseLayout from "@/components/Layout/BaseLayout.vue";
-import { reactive } from "vue";
-import { postAddress } from '@/api/myself'
-import { ResultEnum } from "@/utils/http/types";
-import { useUserStore } from "@/store/modules/user";
-import { toast } from "@/utils/message/toast";
-import router from "@/router";
-import eventBus from "@/utils/common/EventBus";
+import { onMounted, ref } from "vue";
+import { getAddressList } from '@/api/myself'
+import { createOutline, addCircleOutline } from "ionicons/icons";
+import { useRouter } from "vue-router";
+import { log } from "util";
 
-const userStore = useUserStore()
+const router = useRouter()
+// 地址列表
+let addressList = ref([])
 
-const form = reactive({
-    addressID: '',
-    name: '',
-    phone: '',
-    area: '',
-    address: ''
+onMounted(() => {
+    queryAddressList()
 })
 
 /**
- * @desc 保存地址
+ * @desc 获取地址列表
  */
-const save = async() => {
-    // const { Message, RetCode } = await postAddress({ ...form, userID: userStore.LoginID })
-    // // 保存地址成功了，returndata要返回地址数据，带id
-    // if (RetCode, ReturnData === ResultEnum.SUCCESS) {
-        // eventBus.emit('addedAddress', ReturnData.addressInfo);
-        router.go(-1)
+const queryAddressList = async() => {
+    // const { ReturnData, Message, RetCode } = await getAddressList({ userID: userStore.LoginID })
+    // if (RetCode === ResultEnum.SUCCESS) {
+    //     addressList.value = ReturnData.list
+    // } else {
+    //     toast(Message)
     // }
-    // toast(Message)
+    addressList.value = [{
+        addressID: 'add1',
+        area: '广东省 广州市 天河区',
+        address: '信源大厦3018',
+        name: '吴先生',
+        phone: '13229955664'
+    }, {
+        addressID: 'add2',
+        area: '广东省 广州市 南沙区',
+        address: '碧桂园',
+        name: '吴小姐',
+        phone: '13229955664'
+    }]
+}
+
+/**
+ * @desc 跳转新建地址页面
+ */
+const goAddressForm = (item:any) => {
+    if (item.addressID === undefined) {
+        item = { addressID: '', area: '', address: '', name: '', phone: '' }
+    }
+    router.push({ name: 'AddressForm', params: {item: JSON.stringify(item)} })
 }
 </script>
 
 <style lang='scss' scoped>
-ion-input {
-    // --padding-start: 3rem;
-    // --background: pink;
-    // --placeholder-font-style: 1.2rem!important;
-}
-ion-label {
-    width: 8rem;
+ion-icon {
+    font-size: 2rem;
 }
 ion-item {
-    font-size: 1.6rem;
-    .text {
-        color: #b3b3b3;
-    }
-    .label {
-        width: 8rem;
-        // max-width: 20rem!important;
-        margin: 1rem .8rem 1rem 0;
-    }
+    --inner-border-width: 0;
+    --min-height: 6rem;
 }
-ion-button {
-    // width: 100%;
-    margin-top: 1rem;
+.itemContainer {
+    display: flex;
+    flex-direction: column;
+    .text {
+        color: #969799;
+        font-size: 1.4rem;
+    }
 }
 </style>

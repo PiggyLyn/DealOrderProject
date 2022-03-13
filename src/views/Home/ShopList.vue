@@ -221,7 +221,7 @@ const closeFilter = (data:any) => {
             const menu = item.List.find(ele => ele.isSelected)
             queryParam.menuID = menu.typeID
             const type = menu.types.find(ele => ele.isSelected)
-            queryParam.typeID = type.id
+            queryParam.typeID = type?.id ? type.id : ''
         } else if (item.btnID === 'order') {
             const order = item.List.find(ele => ele.isSelected)
             queryParam.orderID = order?.id ? order.id : ''
@@ -233,6 +233,7 @@ const closeFilter = (data:any) => {
             })
             queryParam.orderID = arr.join(',')
         }
+        console.log(queryParam)
     })
 }
 </script>

@@ -16,9 +16,31 @@ http.request({
 * 新增、编辑地址
 * @param 
 */
-export const getAddress = (params: any) =>
+export const getAddressList = (params: any) =>
 http.request({
-    url: "/api/MySelf/getAddress",
+    url: "/api/MySelf/getAddressList",
     method: 'get',
     params,
+})
+
+/**
+* 编辑用户名
+* @param 
+*/
+export const postUsername = (data: any) =>
+http.request({
+    url: "/api/MySelf/postUsername",
+    method: 'post',
+    data,
+})
+
+/**
+* 编辑密码
+* @param 
+*/
+export const postPassword = (data: any) =>
+http.request({
+    url: "/api/MySelf/postPassword",
+    method: 'post',
+    data,
 })
