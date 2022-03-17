@@ -172,14 +172,14 @@ const shopList2 = reactive({
 
 onMounted(() => {
     // queryType()
-    // queryShopList(pageIndex, listParams)
+    queryShopList(pageIndex, listParams)
 })
 
 /**
  * 获取商家列表
  */
 const queryShopList = async(index:number, params:any) => {
-    // const { ReturnData, RetCode } = await getShopList(params,{ pageIndex:index, pageSize: 10 })
+    const { ReturnData, RetCode } = await getShopList('', 10, 1)
     // if (RetCode === ResultEnum.SUCCESS) {
     //     // 如果是第一页，则直接赋值；否则拼接（加载更多）
     //     if (index===1) {
@@ -190,12 +190,12 @@ const queryShopList = async(index:number, params:any) => {
     //     // 如果已经加载了全部数据，则禁用上拉加载功能                                                     
     //     isDisabled.value = shopList.list.length === ReturnData.num
     // }
-    if (pageIndex === 2) {
-        shopList.list = [...shopList.list, ...shopList1.list];
-    } else if (pageIndex === 3) {
-        shopList.list = [...shopList.list, ...shopList2.list];
-        isDisabled.value = true
-    }
+    // if (pageIndex === 2) {
+    //     shopList.list = [...shopList.list, ...shopList1.list];
+    // } else if (pageIndex === 3) {
+    //     shopList.list = [...shopList.list, ...shopList2.list];
+    //     isDisabled.value = true
+    // }
 }
 
 /**

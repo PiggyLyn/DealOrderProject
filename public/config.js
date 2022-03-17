@@ -3,5 +3,5 @@
 var fitsConfig = {
     httpTimeOut: 15000,
     // baseURL: 'http://192.168.32.51:9005/',
-    baseURL: 'https://easydoc.net/mock/hXT9Jrjk',
+    baseURL: 'http://localhost:9090',
 }
